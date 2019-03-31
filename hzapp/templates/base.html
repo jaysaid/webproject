@@ -1,0 +1,764 @@
+{% load staticfiles %}
+<!DOCTYPE html>
+
+<!--[if IE 8]> <html lang="en" class="ie8 no-js"> <![endif]-->
+
+<!--[if IE 9]> <html lang="en" class="ie9 no-js"> <![endif]-->
+
+<!--[if !IE]><!--> <html lang="en" class="no-js"> <!--<![endif]-->
+
+<!-- BEGIN HEAD -->
+
+<head>
+
+	<meta charset="utf-8" />
+
+	<title>{% block title %}{% endblock %}</title>
+
+	<meta content="width=device-width, initial-scale=1.0" name="viewport" />
+
+
+	<!-- BEGIN GLOBAL MANDATORY STYLES -->
+
+	<link href="{% static 'css/bootstrap.min.css' %}" rel="stylesheet" type="text/css"/>
+	<link href="{% static 'css/bootstrap-datetimepicker.min.css' %}" rel="stylesheet" type="text/css"/>
+
+	<link href="{% static 'css/bootstrap-responsive.min.css' %}" rel="stylesheet" type="text/css"/>
+
+	<link href="{% static 'css/font-awesome.min.css' %}" rel="stylesheet" type="text/css"/>
+
+	<link href="{% static 'css/style-metro.css' %}" rel="stylesheet" type="text/css"/>
+
+	<link href="{% static 'css/style.css' %}" rel="stylesheet" type="text/css"/>
+
+	<link href="{% static 'css/style-responsive.css' %}" rel="stylesheet" type="text/css"/>
+
+	<link href="{% static 'css/default.css' %}" rel="stylesheet" type="text/css" id="style_color"/>
+
+	<link href="{% static 'css/uniform.default.css' %}" rel="stylesheet" type="text/css"/>
+	
+
+	<!-- END GLOBAL MANDATORY STYLES -->
+
+	<!-- BEGIN PAGE LEVEL STYLES --> 
+
+	<link href="{% static 'css/jquery.gritter.css' %}" rel="stylesheet" type="text/css"/>
+
+
+	<link href="{% static 'css/jquery.easy-pie-chart.css' %}" rel="stylesheet" type="text/css" static="screen"/>
+
+	
+	<link rel="icon" href="{% static 'images/hzlogo.jpg' %}">
+	<!-- END PAGE LEVEL STYLES -->
+	<!-- <link rel="stylesheet" type="text/css" href="http://libs.cdnjs.net/zTree.v3/3.5.01/css/zTreeStyle/zTreeStyle.css"> -->
+
+    <script src="{% static 'js/jquery.min.js' %}" type="text/javascript"></script>
+  	
+
+	<style type="text/css">
+        body, html {
+            width: 100%;
+            height: 100%;
+			/*overflow:hidden;*/
+           /*overflow:scroll;*/
+        }
+
+      	/*.page-sidebar nav-collapse collapse{
+
+
+      		width: 100%;
+            height: 100%;
+      	}*/
+        /*img
+		{
+		  opacity:0.4;
+		  filter:alpha(opacity=40); 
+
+		}*/
+    </style>
+
+</head>
+
+<!-- END HEAD -->
+
+<!-- BEGIN BODY -->
+
+<body class="page-header-fixed">
+
+	<!-- BEGIN HEADER -->
+
+	<div class="header navbar navbar-inverse navbar-fixed-top">
+
+		<!-- BEGIN TOP NAVIGATION BAR -->
+
+		<div class="navbar-inner">
+
+			<div class="container-fluid">
+
+				<!-- BEGIN LOGO -->
+				{% if user %}
+				<a class="navbar-brand">
+
+				
+				<!-- <img src="{% static 'image/logo.png' %}" alt="logo"/> -->
+
+				</a>
+				
+
+				<!-- END LOGO -->
+
+				<!-- BEGIN RESPONSIVE MENU TOGGLER -->
+
+				<a href="javascript:;" class="btn-navbar collapsed" data-toggle="collapse" data-target=".nav-collapse">
+
+				<img src="{% static 'image/menu-toggler.png' %}" alt="" />
+
+				</a>          
+
+				<!-- END RESPONSIVE MENU TOGGLER -->            
+
+				<!-- BEGIN TOP NAVIGATION MENU -->              
+
+				<ul class="nav pull-right">
+
+					<!-- BEGIN NOTIFICATION DROPDOWN -->   
+
+					<!-- <li class="dropdown" id="header_notification_bar">
+
+						<a href="#" class="dropdown-toggle" data-toggle="dropdown">
+
+						<i class="icon-warning-sign"></i>
+
+						<span class="badge">6</span>
+
+						</a>
+
+						
+
+					</li> -->
+
+					<!-- END NOTIFICATION DROPDOWN -->
+
+					<!-- BEGIN INBOX DROPDOWN -->
+
+					<!-- <li class="dropdown" id="header_inbox_bar">
+
+						<a href="#" class="dropdown-toggle" data-toggle="dropdown">
+
+						<i class="icon-envelope"></i>
+
+						<span class="badge">5</span>
+
+						</a>
+
+						
+					</li> -->
+
+					<!-- END INBOX DROPDOWN -->
+
+					<!-- BEGIN TODO DROPDOWN -->
+
+					<!-- <li class="dropdown">
+
+						<a href="#" class="dropdown-toggle" data-toggle="dropdown">
+
+						<i class="icon-tasks"></i>
+
+						<span class="badge">5</span>
+
+						</a>
+
+					</li> -->
+					<li>
+
+						<a href="/logout">
+
+						<i class="icon-minus-sign"></i>
+
+						<span class="title">注销</span>
+
+						</a>
+
+					</li>
+					<li class="dropdown">
+
+						<a>
+						<!-- <img alt="" src="{% static 'image/user.jpg' %}"/> -->
+
+						<i class="icon-user"></i>
+
+						<span class="title">欢迎您:{{ user.username }}</span>
+
+						</a>
+
+					</li>
+					{% else %}
+					<li class="dropdown">
+
+						<a href="/login">
+
+						<i class="icon-tasks"></i>
+
+						登录
+
+						</a>
+
+					</li>
+					{% endif %}
+					<!-- END TODO DROPDOWN -->
+
+					
+
+				</ul>
+
+				<!-- END TOP NAVIGATION MENU --> 
+
+			</div>
+
+		</div>
+
+		<!-- END TOP NAVIGATION BAR -->
+
+	</div>
+
+	<!-- END HEADER -->
+    
+
+	<!-- BEGIN CONTAINER -->
+
+	<div class="page-container">
+
+		<!-- BEGIN SIDEBAR -->
+
+		<div class="page-sidebar nav-collapse collapse">
+
+			<!-- BEGIN SIDEBAR MENU -->        
+
+			<ul class="page-sidebar-menu">
+
+				<li>
+
+					<!-- BEGIN SIDEBAR TOGGLER BUTTON -->
+
+					<div class="sidebar-toggler hidden-phone" id="btnhide"></div>
+
+					<!-- BEGIN SIDEBAR TOGGLER BUTTON -->
+
+				</li>
+
+				<!-- <li>
+
+					
+					<form class="sidebar-search">
+
+						<div class="input-box">
+
+							<a href="javascript:;" class="remove"></a>
+
+							<input type="text" placeholder="Search..." />
+
+							<input type="button" class="submit" value=" " />
+
+						</div>
+
+					</form>
+					
+
+				</li> -->
+
+				<!-- <li class="start active ">
+
+					<a href="/MainPage">
+
+					<i class="icon-home"></i> 
+
+					<span class="title">主页</span>
+
+					<span class="selected"></span>
+
+					</a>
+
+				</li> -->
+
+				<li class="start active open">
+
+					<a href="javascript:;">
+
+					<i class="icon-folder-open"></i> 
+
+					<span class="title">站点统计</span>
+
+					<span class="arrow "></span>
+
+					</a>
+
+					<ul class="sub-menu">
+
+						<li>
+
+							<a href="javascript:;">
+
+							<i class="icon-folder-open"></i> 
+
+							北京市
+
+							<span class="arrow"></span>
+
+							</a>
+
+							<ul class="sub-menu">
+
+								<li>
+
+									<a href="javascript:;">
+
+									<i class="icon-map-marker"></i>
+
+									工体北路
+
+									<span class="arrow"></span>
+
+									</a>
+
+									<ul class="sub-menu">
+
+										<li><a href="/hztest_info/1"><i class="icon-laptop"></i> 设备一(1号Rtu)</a></li>
+
+									</ul>
+
+								</li>
+								<li>
+
+									<a href="javascript:;">
+
+									<i class="icon-map-marker"></i>
+
+									前门西大街1号
+
+									<span class="arrow"></span>
+
+									</a>
+
+									<ul class="sub-menu">
+
+										<li><a href="/hztest_info/2"><i class="icon-laptop"></i> 设备一(2号Rtu)</a></li>
+
+									</ul>
+
+								</li>
+								<li>
+
+									<a href="javascript:;">
+
+									<i class="icon-map-marker"></i>
+
+									青年沟
+
+									<span class="arrow"></span>
+
+									</a>
+
+									<ul class="sub-menu">
+
+										<li><a href="/hztest_info/3"><i class="icon-laptop"></i> 设备一(3号Rtu)</a></li>
+
+									</ul>
+
+								</li>
+								<li>
+
+									<a href="javascript:;">
+
+									<i class="icon-map-marker"></i>
+
+									定安路
+
+									<span class="arrow"></span>
+
+									</a>
+
+									<ul class="sub-menu">
+
+										<li><a href="/hztest_info/4"><i class="icon-laptop"></i> 设备一(4号Rtu)</a></li>
+
+									</ul>
+
+								</li>
+								<li>
+
+									<a href="javascript:;">
+
+									<i class="icon-map-marker"></i>
+
+									西城区三里河路
+
+									<span class="arrow"></span>
+
+									</a>
+
+									<ul class="sub-menu">
+
+										<li><a href="/hztest_info/5"><i class="icon-laptop"></i> 设备一(5号Rtu)</a></li>
+
+									</ul>
+
+								</li>
+								<li>
+
+									<a href="javascript:;">
+
+									<i class="icon-map-marker"></i>
+
+									西城区西直门外南路
+
+									<span class="arrow"></span>
+
+									</a>
+
+									<ul class="sub-menu">
+
+										<li><a href="/hztest_info/6"><i class="icon-laptop"></i> 设备一(7号Rtu)</a></li>
+
+									</ul>
+
+								</li>
+								<li>
+
+									<a href="javascript:;">
+
+									<i class="icon-map-marker"></i>
+
+									南旱河
+
+									<span class="arrow"></span>
+
+									</a>
+
+									<ul class="sub-menu">
+
+										<li><a href="/hztest_info/7"><i class="icon-laptop"></i> 设备一(8号Rtu)</a></li>
+
+									</ul>
+
+								</li>
+								<li>
+
+									<a href="javascript:;">
+
+									<i class="icon-map-marker"></i>
+
+									东盖板河
+
+									<span class="arrow"></span>
+
+									</a>
+
+									<ul class="sub-menu">
+
+										<li><a href="/hztest_info/8"><i class="icon-laptop"></i> 设备一(10号Rtu)</a></li>
+
+									</ul>
+
+								</li>
+								<li>
+
+									<a href="javascript:;" id="mark1">
+
+									<i class="icon-map-marker"></i>
+
+									丰台区
+
+									<span class="arrow"></span>
+
+									</a>
+
+									<ul class="sub-menu">
+
+										<li><a href="/shhzlist_info/15"><i class="icon-laptop"></i> 大红门</a></li>
+
+									</ul>
+
+								</li>
+								{% if request.user.is_superuser %}
+								<li>
+
+									<a href="javascript:;" id="mark2">
+
+									<i class="icon-map-marker"></i>
+
+									海淀区
+
+									<span class="arrow"></span>
+
+									</a>
+
+									<ul class="sub-menu">
+
+										<li><a href="/qhlist_info/11"><i class="icon-laptop"></i> 清华测站一</a></li>
+										<li><a href="/qhlist_info/12"><i class="icon-laptop"></i> 清华测站二</a></li>
+										<li><a href="/qhlist_info/13"><i class="icon-laptop"></i> 清华测站三</a></li>
+										<li><a href="/wlglist_info/26/"><i class="icon-laptop"></i> 清控设备</a></li>
+									</ul>
+
+								</li>
+
+								
+
+							</ul>
+							
+
+						</li>
+
+						
+
+
+
+						
+
+					</ul>
+
+				</li>
+
+
+			</ul>
+			{% endif %}
+
+			<!-- END SIDEBAR MENU -->
+
+		</div>
+		
+		<!-- END SIDEBAR -->
+
+		<!-- BEGIN PAGE -->
+		<div class="page-content">
+
+			<!-- BEGIN SAMPLE PORTLET CONFIGURATION MODAL FORM-->
+
+
+			<!-- END SAMPLE PORTLET CONFIGURATION MODAL FORM-->
+
+			<!-- BEGIN PAGE CONTAINER-->
+
+			<ul class="breadcrumb">
+				  <div class="btn-group" style="height: 20px;">
+				  <a href="/MainPage"><i class="icon-home">主页</i></a>
+				  </div>
+				  
+				 <!--  <button class="btn btn-default" type="button">test</button>
+				  <button class="btn btn-default" type="button">test2</button>
+				  <button class="btn btn-default" type="button">联系我们</button> -->
+				  <div class="btn-group">
+				      <button class="btn btn-default dropdown-toggle" data-toggle="dropdown" type="button"><i class="icon-cloud"> 模块一</i><span class="caret"></span></button>
+				    <ul class="dropdown-menu">
+				    	<li><a href="/"><i class="icon-spinner"> 功能一</i></a></li>
+				        <li><a href="/"><i class="icon-cloud"> 功能二</i></a></li>
+				        <li><a href="/"><i class="icon-laptop">功能三</i></a></li>
+				    </ul>
+				  </div>
+                  <div class="btn-group">
+                      <button class="btn btn-default dropdown-toggle" data-toggle="dropdown" type="button"><i class="icon-bar-chart"> 模块二</i><span class="caret"></span></button>
+                    <ul class="dropdown-menu">
+                    	 <li><a href="/"><i class="icon-bar-chart"> 功能一</i></a></li>
+                    	 <li><a href="/"><i class="icon-bar-chart"> 功能二</i></a></li>
+                    	 <li><a href="/"><i class="icon-cloud-download"> 功能三</i></a></li>
+                    	 
+                    </ul>
+                  </div>
+                  
+                  <div class="btn-group">
+                      <button class="btn btn-default dropdown-toggle" data-toggle="dropdown" type="button"><i class="icon-bell-alt"> 模块三</i><span class="caret"></span></button>
+                    <ul class="dropdown-menu">
+                        <li><a href="/"><i class="icon-bell"> 功能二</i></a></li>
+                        <!-- <li><a href="##">报表计算</a></li> -->
+                    </ul>
+                  </div>
+                  <div class="btn-group">
+                      <button class="btn btn-default dropdown-toggle" data-toggle="dropdown" type="button"><i class="icon-cog"> 模块四</i><span class="caret"></span></button>
+                    <ul class="dropdown-menu">
+                    	<li><a href="/"><i class="icon-cog"> 功能一</i></a></li>
+                        <li><a href="/"><i class="icon-cog"> 功能二</i></a></li>
+                        
+                    </ul>
+                  </div>
+            </ul>
+			
+			<!-- END PAGE CONTAINER-->    
+			<div>{% block content %}{% endblock %}</div>
+		</div>
+		<!-- END PAGE -->
+		
+
+	</div>
+
+	<!-- END CONTAINER -->
+
+	<!-- BEGIN FOOTER -->
+		
+
+	<div class="footer">
+
+		<div class="footer-inner">
+
+			<!-- 2017 &copy; Metronic by keenthemes.Collect from <a href="" title="备注" target="_blank">备注</a> - More Templates <a href="http://www.cssmoban.com/" target="_blank" title="备注">备注</a> -->
+			
+
+		</div>
+
+		<div class="footer-tools">
+
+			<span class="go-top">
+
+			<i class="icon-angle-up"></i>
+
+			</span>
+
+		</div>
+
+	</div>
+
+	<!-- END FOOTER -->
+
+	<!-- BEGIN JAVASCRIPTS(Load javascripts at bottom, this will reduce page load time) -->
+
+	<!-- BEGIN CORE PLUGINS -->
+
+	
+	
+	<script src="{% static 'js/jquery-1.10.1.min.js' %}" type="text/javascript"></script>
+
+	<script src="{% static 'js/jquery-migrate-1.2.1.min.js' %}" type="text/javascript"></script>
+
+	<!-- IMPORTANT! Load jquery-ui-1.10.1.custom.min.js before bootstrap.min.js to fix bootstrap tooltip conflict with jquery ui tooltip -->
+
+	<script src="{% static 'js/jquery-ui-1.10.1.custom.min.js' %}" type="text/javascript"></script>      
+
+	
+
+	<!--[if lt IE 9]>
+
+	<script src="media/js/excanvas.min.js"></script>
+
+	<script src="media/js/respond.min.js"></script>  
+
+	<![endif]-->   
+
+	<script src="{% static 'js/jquery.slimscroll.min.js' %}" type="text/javascript"></script>
+
+	<script src="{% static 'js/jquery.blockui.min.js' %}" type="text/javascript"></script>  
+
+	<script src="{% static 'js/jquery.cookie.min.js' %}" type="text/javascript"></script>
+
+	<script src="{% static 'js/jquery.uniform.min.js' %}" type="text/javascript" ></script>
+
+	<!-- END CORE PLUGINS -->
+
+	<!-- BEGIN PAGE LEVEL PLUGINS -->
+
+
+
+	<script src="{% static 'js/jquery.flot.js' %}" type="text/javascript"></script>
+
+	<script src="{% static 'js/jquery.flot.resize.js' %}" type="text/javascript"></script>
+
+	<script src="{% static 'js/jquery.pulsate.min.js' %}" type="text/javascript"></script>
+
+	<script src="{% static 'js/date.js' %}" type="text/javascript"></script>
+
+	<script src="{% static 'js/jquery.easy-pie-chart.js' %}" type="text/javascript"></script>
+
+	<script src="{% static 'js/jquery.sparkline.min.js' %}" type="text/javascript"></script>  
+
+	<!-- END PAGE LEVEL PLUGINS -->
+
+	<!-- BEGIN PAGE LEVEL SCRIPTS -->
+
+	
+
+	<!-- <script src="{% static 'js/jquery.min.js' %}" type="text/javascript"></script> -->
+	<script src="{% static 'js/bootstrap.min.js' %}" type="text/javascript"></script>
+	
+	<script src="{% static 'js/bootstrap-datetimepicker.js' %}" type="text/javascript"></script>    
+	<script src="{% static 'js/bootstrap-datetimepicker.zh-CN.js' %}" type="text/javascript"></script>
+	<!-- END PAGE LEVEL SCRIPTS -->  
+	
+	<!-- <script type="text/javascript" src="{% static 'js/bootstrap.min.js' %}"></script> -->
+	<script src="{% static 'js/app.js' %}" type="text/javascript"></script>
+	<script src="{% static 'js/index.js' %}" type="text/javascript"></script> 
+	{% if request.user.is_superuser %}
+  	<script src="{% static 'js/distpicker.data.js' %}" type="text/javascript"></script>
+  	{% else %}
+  	<script src="{% static 'js/distpicker.user.js' %}" type="text/javascript"></script>
+  	{% endif %}
+	<script src="{% static 'js/distpicker.js' %}" type="text/javascript"></script> 
+	<script src="{% static 'js/main.js' %}" type="text/javascript"></script> 
+	<script type="text/javascript">
+
+		jQuery(document).ready(function() {    
+
+		   App.init(); // initlayout and core plugins
+
+		   // Index.init();
+
+		   // Index.initJQVMAP(); // init index page's custom scripts
+
+		   // Index.initCalendar(); // init index page's custom scripts
+
+		   // Index.initCharts(); // init index page's custom scripts
+
+		   // Index.initChat();
+
+		   // Index.initMiniCharts();
+
+		   // Index.initDashboardDaterange();
+
+		   // Index.initIntro();
+
+		});
+
+	// $('#btn').click();
+
+	$('#datetimepicker').datetimepicker({
+	    format: 'yyyy-mm-dd hh:ii:ss',
+	    language: 'zh-CN',
+	    autoclose: true,
+	    todayBtn: 'linked',
+	    todayHighlight: true,
+	    showMeridian: true,
+	    // pickerPosition: "bottom-left",
+	    // language: 'zh-CN',//中文，需要引用zh-CN.js包
+	    startView: 2,//月视图
+	    minView: 1,//日期时间选择器所能够提供的最精确的时间选择视图
+
+    });
+
+    $('#datetimepicker1').datetimepicker({
+	    format: 'yyyy-mm-dd hh:ii:ss',
+	    language: 'zh-CN',
+	    autoclose: true,
+	    todayBtn: 'linked',
+	    todayHighlight: true,
+	    showMeridian: true,
+	    // pickerPosition: "bottom-left",
+	    // language: 'zh-CN',//中文，需要引用zh-CN.js包
+	    startView: 2,//月视图
+	    minView: 1,//日期时间选择器所能够提供的最精确的时间选择视图
+
+    });
+	
+
+	function getbtn(){
+    
+    	$('#btnhide').click();  
+    }
+
+
+ 	  
+	</script>
+
+	<!-- END JAVASCRIPTS -->
+	
+</body>
+
+<!-- END BODY -->
+
+</html>

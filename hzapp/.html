@@ -1,0 +1,676 @@
+{% extends "index.html" %}
+{% load staticfiles %}
+{% block title %}雷达流量在线监测系统{% endblock %}
+
+{% block content %}
+<!DOCTYPE html>
+
+<!--[if IE 8]> <html lang="en" class="ie8"> <![endif]-->
+
+<!--[if IE 9]> <html lang="en" class="ie9"> <![endif]-->
+
+<!--[if !IE]><!--> <html lang="en"> <!--<![endif]-->
+
+<!-- BEGIN HEAD -->
+
+<head>
+
+	<meta charset="utf-8" />
+
+	<!-- <title>Metronic | Data Tables - Editable Tables</title> -->
+
+	<meta content="width=device-width, initial-scale=1.0" name="viewport" />
+
+	<script src="https://cdn.hcharts.cn/highstock/highstock.js"></script>
+    <!-- <script src="https://img.hcharts.cn/highcharts/modules/exporting.js"></script> -->
+    <script src="https://img.hcharts.cn/highcharts-plugins/highcharts-zh_CN.js"></script>
+    
+</head>
+
+<!-- END HEAD -->
+
+<!-- BEGIN BODY -->
+
+<div class="page-container">
+
+    <!-- <div class="page-content"> -->
+
+        <!-- BEGIN SAMPLE PORTLET CONFIGURATION MODAL FORM-->
+
+        <!-- <div id="portlet-config" class="modal hide">
+
+            <div class="modal-header">
+
+                <button data-dismiss="modal" class="close" type="button"></button>
+
+                <h3>Widget Settings</h3>
+
+            </div>
+
+            <div class="modal-body">
+
+                Widget settings form goes here
+
+            </div>
+
+        </div> -->
+
+	<!-- <div class="container-fluid"> -->
+
+				<!-- BEGIN PAGE HEADER-->
+
+				<div class="row-fluid">
+
+					<div class="span12">
+
+						
+
+
+						<ul class="breadcrumb">
+
+							<li>
+
+								<i class="icon-cloud"></i>
+
+								<a href="/MainPage">统计分析</a> 
+
+								<i class="icon-angle-right"></i>
+
+							</li>
+
+							<li>曲线分析</li>
+
+
+						</ul>
+						<form method="POST" class="form-horizontal" id="searchForm">
+							{% csrf_token %}
+							<div class="portlet box blue">
+
+								
+								<div class="portlet-body flip-scroll">
+
+									<table>
+								
+										 
+										 
+										<tr>
+
+											<!-- <td>站点名称：</td>
+											<td>
+											<select  name="equipment_name" id="select_id">
+							
+											{% for equipment_table in obj_equip %}
+											<option value="{{equipment_table.equipment_name}}">{{equipment_table.equipment_name}}</option>
+											{% endfor %}
+											</select>
+											</td> -->
+                                            <td data-toggle="distpicker">
+                                              <select data-province="---- 选择省 ----" name="provinces" id="provinces" onchange="provincechange(this.selectedIndex)">
+                                                <!-- <option value="{{province}}">{{province}}</option> -->
+                                              </select>
+                                              <select data-city="---- 选择市 ----" name="citys" id="citys" onchange="provincechange2(this.selectedIndex)">
+                                                <!-- <option value="{{city}}">{{city}}</option> -->
+                                              </select>
+                                              <select data-district="---- 选择站点 ----" name="equipment_name" id="equipment_name" >
+                                                <!-- <option value="{{equipment_name}}">{{equipment_name}}</option> -->
+                                              </select>
+                                            </td>
+											
+											<td>开始时间：</td>
+											<td><input type="text" id="datetimepicker" name="start_time" class="form-control" value="{{yesterday}}"  required><td>
+											<td>结束时间：</td>
+											<td><input type="text" id="datetimepicker1" name="end_time" class="form-control" value="{{today}}" required></td>
+											<td><input type="button" onclick="retu()" class="btn blue button-submit" value="查询"></td>										
+											<!-- <td><input type="button" onclick="funexcel()" class="btn blue button-submit" value="导出"></td> -->
+										</tr>
+										
+									</table>
+
+								</div>
+							
+						</form>
+						<!-- END PAGE TITLE & BREADCRUMB-->
+
+					</div>
+					
+					
+				</div>
+				<div class="row-fluid">
+
+					<div class="span12">
+
+						<!-- BEGIN SAMPLE TABLE PORTLET-->
+
+						<!-- <div class="portlet box blue">
+
+							<div class="portlet-title">
+
+								<div class="caption"><i class="icon-cloud"></i>数据列表</div>
+
+								<div class="tools">
+
+									<a href="javascript:;" class="collapse"></a>
+
+								
+								</div>
+
+							</div>
+
+							
+							
+						</div> -->
+
+						<!-- END SAMPLE TABLE PORTLET-->
+                        <div class="controls" id="wrapper" align="right">
+
+                            <label class="radio">
+
+                            <input type="radio" name="optionsRadios1" value="option1" id="plain" checked />
+
+                            水位流量关系曲线
+
+                            </label>
+
+                           <!--  <label class="radio">
+
+                            <input type="radio" name="optionsRadios1" value="option2" id="inverted" />
+
+                            水位面积关系曲线
+
+                            </label>   -->
+
+                            <label class="radio">
+
+                            <input type="radio" name="optionsRadios1" value="option2" id="polar"/>
+
+                           水位流速关系曲线
+
+                            </label>  
+
+                        </div>
+						<div id="container" style="width:100%"></div>
+                        
+                       
+						<!-- <div id="container2" style="width:100%"></div>
+						<div id="container3" style="width:100%"></div> -->
+					</div>
+				</div>
+				<!-- END PAGE HEADER-->
+				
+	<!-- <div id="container" style="height:100%"></div> -->
+	<!-- </div> -->
+</div>
+
+
+</html>
+	
+<script type="text/javascript">
+var json_chart ={{json_chart|safe}};//获取查询结果json数据画图
+var eq1 = {{eq1|safe}};//页面请求参数1
+var eq2 = {{eq2|safe}};//页面请求参数2
+var eq3 = {{eq3|safe}};//页面请求参数3
+var json_time=[]; //时间
+var json_level=[];//水位
+var json_liusu=[];//流速
+var json_liuliang=[];//流量
+// var json_area=[];//面积
+alllist=[];//转化为图表类型的集合时间
+
+    // obj1 =document.getElementById('provinces');
+    // window.onload = function(){
+
+     
+        
+    //     for (var i =0; i <obj1.length; i++) {
+            
+    //         if(obj1[i].value==eq1){
+    //             obj1[parseInt(i)].selected=true;
+    //         }
+    //     }
+        
+    //     provincechange();
+
+    // }
+
+    //     var city =document.getElementById('citys');
+    //     function provincechange(){
+
+        
+       
+    //     for (var i = 0; i <city.length; i++) {
+
+    //         city.options[i].text=eq2;
+    //         city.options[i].value=eq2;
+
+    //     }
+    //     $("#citys").children().not(":eq(0)").remove();
+        
+    //     provincechange2();
+    // }
+
+    // var equipment_name =document.getElementById('equipment_name');
+    // function provincechange2(){
+
+        
+       
+    //     for (var i = 0; i <equipment_name.length; i++) {
+            
+            
+    //         equipment_name.options[1].text=eq3;
+    //         equipment_name.options[1].value=eq3;
+            
+    //     }
+    //     $("#equipment_name").children().not(":eq(1)").remove();
+
+    // }
+
+obj1 =document.getElementById('provinces');
+    window.onload = function(){
+
+		parent.getbtn();
+        
+        for (var i =0; i <obj1.length; i++) {
+            
+            if(obj1[i].value==eq1){
+                obj1[parseInt(i)].selected=true;
+            }
+        }
+        
+        provincechange();
+
+    }
+
+        var city =document.getElementById('citys');
+        function provincechange(){
+
+        
+       
+        for (var i = 0; i <city.length; i++) {
+
+            city.options[i].text=eq2;
+            city.options[i].value=eq2;
+
+        }
+        $("#citys").children().not(":eq(0)").remove();
+        
+        provincechange2();
+    }
+
+    var equipment_name =document.getElementById('equipment_name');
+    //alert(equipment_name.selectedIndex);
+    function provincechange2(){
+
+        
+       
+        for (var i = 0; i <equipment_name.length; i++) {
+            
+            
+            equipment_name.options[1].text=eq3;
+            equipment_name.options[1].value=eq3;
+            
+        }
+        if(eq1!='北京市'){
+            
+            $("#equipment_name option[value='大红门']").remove();
+            $("#equipment_name option[value='清华测站一']").remove();
+            $("#equipment_name option[value='清华测站二']").remove();
+            $("#equipment_name option[value='清华测站三']").remove();
+            $("#equipment_name option[value='清控设备']").remove();
+            $("#equipment_name").children().not(":eq(1)").remove();
+            if(eq1=='上海市'){
+                if(equipment_name.options[0].value=='淀浦河桥测站'){
+                    $("#equipment_name").append("<option>"+'16号Rtu'+"</option>");
+                }else{
+                    $("#equipment_name").append("<option>"+'淀浦河桥测站'+"</option>")
+                }
+            }
+            
+        }       
+        else{
+            if(equipment_name.value!='大红门'){//解决这一选项被清空的问题
+                $("#equipment_name").append("<option>"+'大红门'+"</option>")
+            }
+            
+            if($("#equipment_name option:contains("+equipment_name.value+")").length > 1){ //判断下拉列表是否有重复，有就删除重复
+                $("#equipment_name option:contains("+equipment_name.value+"):gt(0)").remove();
+            }
+            
+        }   
+        // $("#equipment_name").children().not(":eq(1)").remove();
+
+
+    }
+
+
+if(json_chart.length>0){
+    for(var i=0;i<json_chart.length;i++){
+            
+            json_level.push(json_chart[i].shuishen);
+            json_liusu.push(json_chart[i].duanmian_avg);
+            json_liuliang.push(json_chart[i].liuliang);
+            var xtime =json_chart[i].record_time.substring(5,16);
+            json_time.push(xtime.replace('T','\r\n'))   
+            
+
+            var someDate = new Date(Date.parse(json_chart[i].record_time));
+            var tms=Date.UTC(someDate.getFullYear(), someDate.getMonth(), someDate.getDate(), someDate.getHours(),someDate.getMinutes());
+            alllist.push(tms);
+        };
+    }
+
+// for (var i=0;i<json_chart.length;i++) {
+// 	// test.push[Date.UTC(json_chart[i].record_time.substring(0,4),json_chart[i].record_time.substring(5,7),json_chart[i].record_time.substring(8,10))];
+// 	var someDate = new Date(Date.parse(json_chart[i].record_time));
+// 	var tms=Date.UTC(someDate.getFullYear(), someDate.getMonth(), someDate.getDate(), someDate.getHours(),someDate.getMinutes());
+// 	alllist.push(tms);
+
+// }
+
+var list1 = alllist.map((key,value)=>[key,json_liuliang[value]]);//转化为图表数据类型的流量(二维数组)
+var list2 = alllist.map((key,value)=>[key,json_level[value]]);//转化为图表数据类型水位(二维数组)
+var list3 = alllist.map((key,value)=>[key,json_liusu[value]]);//转化为图表数据类型流速(二维数组)
+
+Highcharts.setOptions({
+    exporting:{
+                enabled:false
+        },
+        credits: {
+            enabled: false
+        },
+        lang: {
+        rangeSelectorZoom: '' // 不显示 'zoom' 文字
+    },
+        colors: ['#058DC7', '#ED561B'],
+
+        chart:{
+            height:500,
+        }
+    });
+
+var chart = Highcharts.stockChart('container', {
+    
+    rangeSelector: {
+   //  buttons: [{
+ 		// type: 'day',
+   //      count: 7,
+   //      text: '1 周'
+   //  }, {
+   //      type: 'month',
+   //      count: 1,
+   //      text: '月'
+   //  }, {
+   //      type: 'month',
+   //      count: 3,
+   //      text: '季度'
+   //  }, {
+   //      type: 'all',
+   //      text: '所有'
+   //  }],
+    buttonTheme: {
+            display: 'none' // 不显示按钮
+    },
+    // inputDateFormat:'%Y-%m-%d %H:%M:%S',
+    // inputEditDateFormat:'%Y-%m-%d %H:%M:%S',
+    
+    selected: 1,
+    inputEnabled: false
+	}, 
+    title: {
+        text: '',
+        x: -20
+    },
+    subtitle: {
+        // text: '数据来源: 航征',
+        text: '水位/流量过程线',
+        x: -20
+    },
+    xAxis: {
+        // categories: ['00:00', '02:00', '04:00', '06:00', '08:00', '10:00', '12:00', '14:00', '16:00', '18:00', '20:00', '22:00']
+        // categories: json_time,
+        
+         type: 'datetime',
+        
+    },
+    // scrollbar: {
+    //     enabled:flag
+    // },
+    yAxis:
+    //  {
+    //     title: {
+    //         text: '水位(m)'
+    //     },
+    //     plotLines: [{
+    //         value: 0,
+    //         width: 1,
+    //         // color: '#808080'
+    //     }]
+    // },
+    [{ // Primary yAxis
+        title: {
+            text: '水位(m)',
+           
+        },
+        opposite: false  //水位坐标，false为反向
+    },
+    { // Secondary yAxis
+        title: {
+            text: '流量(m³/s)',
+        },
+        allowDecimals:false,
+        labels: {
+            // format: '{value} m³/s',
+            // format: '{value}',
+        },
+        opposite: true     //流量坐标，true为正向
+    } 
+    ],
+    legend: {
+        // layout: 'vertical',
+        // align: 'top',
+        // verticalAlign: 'middle',
+        // borderWidth: 0
+        backgroundColor : '#ccc', // 背景颜色
+
+	    borderWidth : '0', // 边框宽度
+
+	    borderRadius : 0,  // 边框圆角
+
+	    borderColor : 'red', // 边框颜色
+
+	    enabled : true,  // 图例开关
+
+	    layout : 'vertical', // 图例布局类型，默认horizontal 水平布局，垂直布局vertical
+
+	    align: 'left',
+
+	    verticalAlign: 'middle',
+
+	    // 图例点击后颜色
+	    itemHiddenStyle : {
+	           color : 'red'
+	     },
+	     // 鼠标放上样式
+	     itemHoverStyle : {
+	        color : 'red'
+	    },
+	    symbolPadding : 5,// 图标跟文字的间距
+	   
+	    },
+    // series: [ {
+    //     name: '水位',
+    //     data: [],
+    //     color: '#ED561B'
+    // }
+    // ]
+    series: [{
+        name: '流量(m³/s)',
+        // type: 'column',
+        yAxis: 1,
+        // data: [49.9, 71.5, 106.4, 129.2, 144.0, 176.0, 135.6, 148.5, 216.4, 194.1, 95.6, 54.4],
+        // data: json_liuliang,
+        data:list1,
+        // tooltip: {
+        //     valueSuffix: ' m3'
+        // }
+    }, {
+        name: "水位(m)",
+        showInLegend: true,
+        // type: 'spline',
+        // data: [7.0, 6.9, 9.5, 14.5, 18.2, 21.5, 25.2, 26.5, 23.3, 18.3, 13.9, 9.6],
+        // data: json_level,   	
+    	data:list2,
+        // tooltip: {
+        //     valueSuffix: 'm'
+        // }
+    }]
+});
+
+// alert(list1);
+// 给 wrapper 添加点击事件
+Highcharts.addEvent(document.getElementById('wrapper'), 'click', function(e) {
+        var target = e.target,
+                input = null;
+        if(target.tagName === 'INPUT') { // 判断点的是否是 button
+                input = target.id;
+                switch(input) {
+                        case 'plain': 
+                                chart.update({
+                                        // chart: {
+                                        //         inverted: false,
+                                        //         polar: false
+                                        // },
+                                        yAxis:
+                                       
+                                        [{ // Primary yAxis
+                                            title: {
+                                                text: '水位(m)',
+                                               
+                                            }
+                                        },
+                                        { // Secondary yAxis
+                                            allowDecimals:false,
+                                            title: {
+                                                text: '流量(m³/s)',
+                                            },
+                                            
+                                        } 
+                                        ],
+                                        subtitle: {
+                                                text: '水位流量关系曲线'
+                                        },
+                                        series: [{
+                                        type: 'spline',
+                                        name: '流量(m³/s)',
+                                        // data: [49.9, 71.5, 106.4, 129.2, 144.0, 176.0, 135.6, 148.5, 216.4, 194.1, 95.6, 54.4]
+                                        data: list1,
+                                        },{
+                                        type: 'spline',
+                                        name: '水位(m)',
+                                        // data: [7.0, 6.9, 9.5, 14.5, 18.2, 21.5, 25.2, 26.5, 23.3, 18.3, 13.9, 9.6]
+                                        data: list2,
+                                        }]
+
+                               });
+                                break;
+                        // case 'inverted': 
+                        //         chart.update({
+                        //                 // chart: {
+                        //                 //         inverted: false,
+                        //                 //         polar: false
+                        //                 // },
+                        //                 subtitle: {
+                        //                         text: '水位面积关系曲线'
+                        //                 },
+                        //                  series: [{
+                        //                 // type: 'column',
+                        //                 name: '面积(㎡)',
+                        //                 // data: [129.9, 171.5, 306.4, 429.2, 144.0, 176.0, 135.6, 248.5, 216.4, 194.1, 95.6, 54.4]
+                        //                 data: json_area
+                        //                 },{
+                        //                 // type: 'column',
+                        //                 name: '水位(m)',
+                        //                 // data: [69.9, 51.5, 176.4, 121.2, 124.0, 476.0, 935.6, 248.5, 266.4, 191.1, 99.6, 53.4]
+                        //                 data: json_level
+                        //                 }]
+                        //         });
+                        //         break;
+                        case 'polar': 
+                                chart.update({
+                                        // chart: {
+                                        //         inverted: false,
+                                        //         polar: false
+                                        // },
+                                        
+                                        yAxis:
+                                       
+                                        [{ // Primary yAxis
+                                            title: {
+                                                text: '水位(m)',
+                                               
+                                            }
+                                        },
+                                        { // Secondary yAxis
+                                            title: {
+                                                text: '流速(m/s)',
+                                            },
+                                            
+                                        } 
+                                        ],
+                                        subtitle: {
+                                                text: '水位流速关系曲线'
+                                        },
+                                         series: [{
+                                        type: 'spline',
+                                        name: '流速(m/s)',
+                                        // data: [129.9, 171.5, 306.4, 429.2, 144.0, 176.0, 135.6, 248.5, 216.4, 194.1, 95.6, 54.4]
+                                        data: list3,
+                                        }]
+                                });
+                                break;
+                }
+        }
+});
+	
+    
+	function retu(){
+        
+        var obj1 =document.getElementById('provinces').value;
+        var obj2 =document.getElementById('citys').value;
+        var obj3 =document.getElementById('equipment_name').value;
+        var time1=document.getElementById("datetimepicker").value;
+        var time2=document.getElementById("datetimepicker1").value;
+        
+        var year = parseInt(time1.substring(0,4));
+        var month = parseInt(time1.substring(5,7),10);
+        var day = parseInt(time1.substring(8,10),10);   
+        var year2 = parseInt(time2.substring(0,4));
+        var month2 = parseInt(time2.substring(5,7),10);
+        var day2 = parseInt(time2.substring(8,10),10);
+        if (time1=='' && time2==''){
+            alert('请选择时间');
+        }
+        else if(time1=='' && time2!=''){
+            alert('开始时间不能为空');
+        }
+        else if(time1!='' && time2==''){
+            alert('结束时间不能为空');
+        }
+        else if(day2-day>7 && month==month2){
+            alert('请选择间隔时间大约为一周的日期');
+        }
+        else if(obj1=='' && obj2=='' && obj3==''){
+            alert('选项不能为空,请选择一个站点');
+        }
+        else{
+            searchForm.submit();
+        }
+        
+        // obj1[parseInt(index)].selected=true;
+     //     obj2[parseInt(index1)].selected=true;
+     //     obj[parseInt(index2)].selected=true;
+
+    }
+
+       
+</script>
+{% endblock %}

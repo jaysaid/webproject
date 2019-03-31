@@ -1,0 +1,505 @@
+{% extends "index.html" %}
+{% load staticfiles %}
+{% block title %}雷达流量在线监测系统{% endblock %}
+
+{% block content %}
+<!DOCTYPE html>
+
+<!--[if IE 8]> <html lang="en" class="ie8"> <![endif]-->
+
+<!--[if IE 9]> <html lang="en" class="ie9"> <![endif]-->
+
+<!--[if !IE]><!--> <html lang="en"> <!--<![endif]-->
+
+<!-- BEGIN HEAD -->
+
+<head>
+
+	<meta charset="utf-8" />
+
+	<!-- <title>Metronic | Data Tables - Editable Tables</title> -->
+
+	<meta content="width=device-width, initial-scale=1.0" name="viewport" />
+
+</head>
+
+<!-- END HEAD -->
+
+<!-- BEGIN BODY -->
+<body>
+<div class="page-container">
+
+    <!-- <div class="page-content"> -->
+
+        <!-- BEGIN SAMPLE PORTLET CONFIGURATION MODAL FORM-->
+
+        <!-- <div id="portlet-config" class="modal hide">
+
+            <div class="modal-header">
+
+                <button data-dismiss="modal" class="close" type="button"></button>
+
+                <h3>Widget Settings</h3>
+
+            </div>
+
+            <div class="modal-body">
+
+                Widget settings form goes here
+
+            </div>
+
+        </div> -->
+     
+	<!-- <div class="container-fluid"> -->
+
+				<!-- BEGIN PAGE HEADER-->
+
+				<div class="row-fluid">
+
+					<div class="span12">
+
+						<!-- BEGIN STYLE CUSTOMIZER -->
+
+
+						<ul class="breadcrumb">
+
+							<li>
+
+								<i class="icon-cloud"></i>
+
+								<a href="/MainPage">数据查询</a> 
+
+								<i class="icon-angle-right"></i>
+
+							</li>
+
+							<li>历史数据</li>
+
+							<li class="pull-right no-text-shadow">
+
+								<div id="dashboard-report-range" class="dashboard-date-range tooltips no-tooltip-on-touch-device responsive" data-tablet="" data-desktop="tooltips" data-placement="top" data-original-title="Change dashboard date range">
+
+									<i class="icon-calendar"></i>
+
+									<span></span>
+
+									<i class="icon-angle-down"></i>
+
+								</div>
+
+							</li>
+							<!-- <ul id="treeDemo" class="ztree"></ul> -->
+						</ul>
+						<form method="GET"  class="form-horizontal" id="searchForm">
+							{% csrf_token %}
+							<div class="portlet box blue">
+
+								<div class="portlet-title">
+
+								<div class="caption"><i class="icon-cloud"></i>查询数据信息</div>
+
+
+								</div>
+
+								<div class="portlet-body flip-scroll">
+
+									<table>
+										<!-- <div class="content_wrap">
+									        <div class="zTreeDemoBackground left">
+									            <ul class="list">
+									                <li class="title">城市：<input id="citySel" type="text" value="" onkeyup="AutoMatch(this)"
+									                    style="width: 120px;" />
+									                </li>
+									            </ul>
+									        </div>
+										</div>
+										<div id="menuContent" class="menuContent" style="displayx: none; position: absolute;">
+										        <ul id="treeDemo" class="ztree" style="margin-top: 0; width: 110px;">
+										        </ul>
+										</div> -->
+										<!-- <button class="btn btn-primary btn-xs" data-toggle="modal" data-target="#myModal" onclick="return false;">选择地区</button> -->
+
+									
+									        <!-- <div class="modal fade" id="myModal" tabindex="-1" role="dialog" 
+									           aria-labelledby="myModalLabel" aria-hidden="true">
+									           <div class="modal-dialog">
+									              <div class="modal-content">
+									                 <div class="modal-header" style="padding:5px;">
+									                   
+									                    <h4 class="modal-title" id="myModalLabel">
+									                           选择地区
+									                    </h4>
+									                 </div>
+									                 <div class="modal-body">
+									                    <div class="zTreeDemoBackground left">
+									                        <ul id="areaTree" class="ztree" style="max-height:300px;width:auto; overflow-y:scroll;"></ul>
+									                    </div>
+									                 </div>
+									                 <div class="modal-footer" style="padding:5px;">
+									                    <button type="button" class="btn btn-primary"  onclick="getSelectNodes();">
+									                           确认
+									                    </button>
+									                    <button type="button" class="btn btn-default" 
+									                       data-dismiss="modal" onclick="getSelectNodes();">关闭
+									                    </button>
+									                 </div>
+									              </div>
+									            </div>
+									        </div> -->
+										
+		                                <!-- <div class="form-group">
+								            <div class="form-inline">
+								               行政区划: <input type="text" class="form-control" placeholder="请选择" />
+								                
+								            </div>
+
+										 </div> -->
+										 
+										<tr>
+											
+
+  											<td data-toggle="distpicker">
+											  <select data-province="---- 选择省 ----" name="provinces" id="provinces" onchange="provincechange(this.selectedIndex)">
+											  	
+											  </select>
+											  <select data-city="---- 选择市 ----" name="citys" id="citys" onchange="provincechange2(this.selectedIndex)">
+											  	
+											  </select>
+											  <select data-district="---- 选择站点 ----" name="equipment_name" id="equipment_name" >
+											  	
+											  </select>
+											</td>
+											<!-- <td data-toggle="distpicker">
+											  <select  name="provinces" id="provinces" onchange="provincechange(this.selectedIndex)">
+											  	
+											  </select>
+											  <select  name="citys" id="citys" onchange="provincechange2(this.selectedIndex)">
+											  	
+											  </select>
+											  <select  name="equipment_name" id="equipment_name" >
+											  	
+											  </select>
+											</td> -->
+											
+
+											<!-- <td>开始时间：</td> -->
+											<td>开始时间：<input type="text" id="datetimepicker"  name="start_time" class="form-control" value="{{yesterday}}" required></td>
+											<!-- <td>结束时间：</td> -->
+											<td>结束时间：<input type="text" id="datetimepicker1"  name="end_time" class="form-control" value="{{today}}" required></td>
+											<td><input type="button" onclick="retu()" class="btn blue button-submit" value="查询"></td>	
+											<!-- <td><input type="button" id="tijiao"  value="提交"></td> -->
+											
+										</tr>
+										
+									</table>
+
+								</div>
+							
+						</form>
+						<!-- END PAGE TITLE & BREADCRUMB-->
+						
+					</div>
+					
+					
+				</div>
+				<div class="row-fluid">
+
+					<div class="span12">
+
+						<!-- BEGIN SAMPLE TABLE PORTLET-->
+
+						<div class="portlet box blue">
+
+							<div class="portlet-title">
+
+								<div class="caption"><i class="icon-cloud"></i>数据列表</div>
+
+								<div class="tools">
+
+									<a href="javascript:;" class="collapse"></a>
+
+								
+								</div>
+
+							</div>
+
+							<div class="portlet-body flip-scroll">
+
+								<table class="table-bordered table-striped table-condensed flip-content">
+
+									<thead class="flip-content">
+
+										<tr class="text-center">
+											<th>序号</th>
+											<th>时间</th>
+											<!-- <th>状态</th> -->
+											<!-- <th>表面流速(m/s)</th> -->
+											<th>流速(m/s)</th>
+											<th>流量(m³/s)</th>
+											<th>水位(m)</th>
+											<th>过水面积(m²)</th>
+											
+											
+										</tr>
+
+									</thead>
+
+									<tbody>
+
+										{% for shhz_qinghua2 in info %}
+										
+										<tr class="text-center">
+											<td>{{forloop.counter}}</td>
+											<td>{{shhz_qinghua2.record_time}}</td>
+											{% ifequal equipment_name '芜湖誓节闸' %}
+											<td>{{shhz_qinghua2.duanmian_avg}}</td>
+											{% else %}
+											<td>{{shhz_qinghua2.avg_su}}</td>
+											{% endifequal %}
+											
+											<td>{{shhz_qinghua2.liuliang}}</td>
+											<td>{{shhz_qinghua2.shuishen}}</td>
+											<td>{{shhz_qinghua2.duanmian_s}}</td>
+											
+										</tr>
+										
+										{% empty %}
+										<tr>
+											<td>暂无信息</td>
+										</tr>
+										{% endfor %}    
+
+										
+										
+											
+						
+											
+									</tbody>
+
+								</table>
+								
+								<div class="pagination pagination-centered">
+								{% if info.has_previous %}
+								<!-- <a href="?page={{ info.previous_page_number }}&equipment_name={{equipment_name}}&start_time={{query1}}&end_time={{query2}}">上一页</a> -->
+								<a href="?page={{ info.previous_page_number }}&provinces={{provinces}}&citys={{citys}}&equipment_name={{equipment_name}}&start_time={{query1}}&end_time={{query2}}">上一页</a>
+								<span class="current">
+									<input type="button" value="首页" onclick="pageMenu()">		    
+								</span>
+								{% endif %}
+								<span class="current">
+								第{{ info.number }}页/ 共{{ info.paginator.num_pages}}页
+								</span>
+								{% if info.has_next %}
+								<!-- <a href="?page={{ info.next_page_number }}&equipment_name={{equipment_name}}&start_time={{query1}}&end_time={{query2}}">下一页</a> -->
+								<a href="?page={{ info.next_page_number }}&provinces={{provinces}}&citys={{citys}}&equipment_name={{equipment_name}}&start_time={{query1}}&end_time={{query2}}">下一页</a>
+								<span class="current">
+								跳转页数    <input type="text" name="count" id="count" style="width: 30px;height: 15px;">
+										<input type="button" value="确定" onclick="pagesubmit()">
+										    
+								</span>
+								{% endif %}					
+								</div>       
+							</div>
+							
+						</div>
+
+						<!-- END SAMPLE TABLE PORTLET-->
+
+					</div>
+				</div>
+				<!-- END PAGE HEADER-->
+				
+	<!-- <div id="container" style="height:100%"></div> -->
+	<!-- </div> -->
+</div>
+
+	
+
+</body>
+</html>
+	
+<script type="text/javascript">
+
+	var timelist = {{time_list|safe}};//时间参数。开始与结束
+	var eqname1={{eqname1|safe}}; //分页传参1
+	var eprovince1={{eprovince1|safe}}; //分页传参2
+	var ecity1={{ecity1|safe}}; //分页传参3
+	var xtime=timelist[0];
+	var ytime=timelist[1];
+	var eq1 = {{eq1|safe}};
+	var eq2 = {{eq2|safe}};
+	var eq3 = {{eq3|safe}};
+	
+
+ 	var obj1 =document.getElementById('provinces');
+ 	var city =document.getElementById('citys');
+ 	var equipment_name =document.getElementById('equipment_name');
+ 	
+	window.onload = function(){
+
+		parent.getbtn();
+        
+        for (var i =0; i <obj1.length; i++) {
+            
+            if(obj1[i].value==eq1){
+                obj1[parseInt(i)].selected=true;
+            }
+            if(eq1==null && eq2==null && eq3==null){ //初始化第一项
+        		obj1[0].selected=true;
+        		$("#citys").empty();
+        		$("#equipment_name").empty();
+        		// $("#equipment_name option:not(:first)").remove();
+        		break;
+        	}
+            
+        }
+
+        // if(eq1==null && eq2==null && eq3==null){ //初始化第一项
+        // 	obj1[0].selected=true;
+        // }
+        
+        // if(obj1.value=='' && city.value=='北京市市辖区' && equipment_name.value=='大红门'){ //初始化第一项
+        // 	obj1[0].selected=true;
+        // 	alert(obj1.value);
+	       //  alert(city.value);
+	       //  alert(equipment_name.value);
+        // }
+        provincechange();
+
+	}
+
+        
+        function provincechange(){
+    
+        for (var i = 0; i <city.length; i++) {
+
+            city.options[i].text=eq2;
+            city.options[i].value=eq2;
+
+        }
+        $("#citys").children().not(":eq(0)").remove();
+        
+     //    if(city.value=='null'){
+    	// 	$("#citys").append("<option>"+'北京市市辖区'+"</option>");
+    	// }
+     //    alert(city.value);
+        provincechange2();
+
+    }
+
+    function provincechange2(){
+
+        
+       
+        for (var i = 0; i <equipment_name.length; i++) {
+            
+            
+            equipment_name.options[1].text=eq3;
+            equipment_name.options[1].value=eq3;
+            
+        }
+        
+        if(eq1!='北京市'){
+        	
+        	$("#equipment_name option[value='大红门']").remove();
+        	$("#equipment_name option[value='清华测站一']").remove();
+        	$("#equipment_name option[value='清华测站二']").remove();
+        	$("#equipment_name option[value='清华测站三']").remove();
+        	$("#equipment_name option[value='清控设备']").remove();
+        	$("#equipment_name").children().not(":eq(1)").remove();
+        	if(eq1=='上海市'){
+        		if(equipment_name.options[0].value=='淀浦河桥测站'){
+	        		$("#equipment_name").append("<option>"+'上海铂钰'+"</option>");
+	        	}else{
+	        		$("#equipment_name").append("<option>"+'淀浦河桥测站'+"</option>")
+	        	}
+        	}
+        	
+        }
+        else{
+        	if(equipment_name.value!='大红门'){//解决这一选项被清空的问题
+        		$("#equipment_name").append("<option>"+'大红门'+"</option>")
+        	}
+        	
+        	if($("#equipment_name option:contains("+equipment_name.value+")").length > 1){ //判断下拉列表是否有重复，有就删除重复
+        		$("#equipment_name option:contains("+equipment_name.value+"):gt(0)").remove();
+        	}
+
+        }   	
+
+        // $("#equipment_name").children().not(":eq(1)").remove();
+
+        // if(obj1.value =='北京市' && city.value=='北京市市辖区' && equipment_name.value=='大红门'){
+        //     	//eq1='---- 选择省 ----';
+        //     	// $("#provinces").append("<option>"+'---- 选择省 ----'+"</option>");
+        //     	alert(eq1);
+        //     	alert(eq2);
+        //     	alert(eq3);
+        // }
+
+    }
+
+	// console.log(obj1);
+	// console.log(city);
+	// console.log(equipment_name);
+	function pagesubmit(){
+		var count = document.getElementById("count").value;
+		location.href='/data_list'+'/?page='+count+'&equipment_name='+eqname1+'&provinces='+eprovince1+'&citys='+ecity1+'&start_time='+xtime+'&end_time='+ytime
+
+	}
+	function pageMenu(){
+		location.href='/data_list'+'/?page=1'+'&equipment_name='+eqname1+'&provinces='+eprovince1+'&citys='+ecity1+'&start_time='+xtime+'&end_time='+ytime
+	}
+
+
+
+	function retu(){
+
+		var obj1 =document.getElementById('provinces').value;
+	 	var obj2 =document.getElementById('citys').value;
+	 	var obj3 =document.getElementById('equipment_name').value;
+	 	
+		var time1=document.getElementById("datetimepicker").value;
+		var time2=document.getElementById("datetimepicker1").value;
+		var year = parseInt(time1.substring(0,4));
+		var month = parseInt(time1.substring(5,7),10);
+	 	var day = parseInt(time1.substring(8,10),10);	
+		var year2 = parseInt(time2.substring(0,4));
+		var month2 = parseInt(time2.substring(5,7),10);
+	 	var day2 = parseInt(time2.substring(8,10),10);
+	 	if (time1=='' && time2==''){
+			alert('请选择时间');
+		}
+		else if(time1=='' && time2!=''){
+			alert('开始时间不能为空');
+		}
+		else if(time1!='' && time2==''){
+			alert('结束时间不能为空');
+		}	 
+		else if(day2-day>7 && month==month2){
+			alert('请选择间隔时间大约为一周的日期');
+		}
+		else if(obj1=='' && obj2=='null' && obj3=='null'){
+			alert('选项不能为空,请选择一个站点');
+		}
+		else if(obj1=='' && obj2=='' && obj3==''){
+			alert('选项不能为空,请选择一个站点');
+		}
+		else{
+
+			searchForm.submit();
+		}
+		
+		// obj1[parseInt(index)].selected=true;
+	 // 	obj2[parseInt(index1)].selected=true;
+	 // 	obj[parseInt(index2)].selected=true;
+
+	}
+
+
+	
+		
+       
+</script>
+{% endblock %}

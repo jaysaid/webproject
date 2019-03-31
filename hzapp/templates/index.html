@@ -1,0 +1,284 @@
+{% extends "base.html" %}
+{% load staticfiles %}
+{% block title %}在线监测系统{% endblock %}
+
+{% block content %}
+
+<!DOCTYPE html>
+
+<!--[if IE 8]> <html lang="en" class="ie8 no-js"> <![endif]-->
+
+<!--[if IE 9]> <html lang="en" class="ie9 no-js"> <![endif]-->
+
+<!--[if !IE]><!--> <html lang="en" class="no-js"> <!--<![endif]-->
+
+<!-- BEGIN HEAD -->
+
+<head>
+
+	<meta charset="utf-8" />
+
+	<!-- <title>Metronic | Admin Dashboard Template</title> -->
+
+	<meta content="width=device-width, initial-scale=1.0" name="viewport" />
+	
+	
+	<!-- <link rel="stylesheet" type="text/css" href="http://libs.cdnjs.net/zTree.v3/3.5.01/css/zTreeStyle/zTreeStyle.css">
+
+  <script src="{% static 'js/jquery.ztree.core.js' %}" type="text/javascript"></script>  
+  <script src="{% static 'js/jquery.ztree.excheck.js' %}" type="text/javascript"></script> -->
+
+    
+	<style type="text/css">
+		body, html {
+            width: 100%;
+            height: 100%;
+            /*overflow: hidden;
+			margin: 0;
+			position: absolute;*/
+			/*float: center;*/
+			
+        }
+
+		#allmap {
+                height: 900px;
+                width: 100%;
+                float: center;    
+            }
+
+        .BMap_cpyCtrl {
+    		display: none;
+        }
+ 
+        .anchorBL {
+            display: none;
+        }
+
+    </style>
+    <script type="text/javascript" src="http://api.map.baidu.com/api?v=3.0&ak=4GqopLcRL5kDi2Pb6QIdsbBvH5iILYgY"></script>
+    <script src="http://libs.baidu.com/jquery/1.9.0/jquery.js"></script>
+</head>
+
+<!-- END HEAD -->
+
+<!-- BEGIN BODY -->
+
+<body>
+<!-- <div class="page-container"> -->
+
+    <!-- <div class="page-content"> -->
+
+        <!-- BEGIN SAMPLE PORTLET CONFIGURATION MODAL FORM-->
+
+        <!-- <div id="portlet-config" class="modal hide">
+
+            <div class="modal-header">
+
+                <button data-dismiss="modal" class="close" type="button"></button>
+
+                <h3>Widget Settings</h3>
+
+            </div>
+
+            <div class="modal-body">
+
+                Widget settings form goes here
+
+            </div>
+
+        </div> -->
+
+	<!-- <div class="container-fluid"> -->
+
+				<!-- BEGIN PAGE HEADER-->
+
+				
+
+				<!-- END PAGE HEADER-->
+
+
+
+                <!-- <div class="page-sidebar nav-collapse collapse">
+                    <ul class="page-sidebar-menu">
+                    </ul>
+                    
+                </div> -->
+				<!-- <div class="btn-group"> -->
+                    
+				<!-- </div> -->
+
+                <!-- <ul id="treeDemo" class="ztree"></ul> -->
+               
+
+				
+				<div id="allmap"></div>
+
+				
+                
+    				
+
+    			
+
+	<!-- </div> -->
+
+	<!-- </div> -->
+<!-- </div> -->
+</body>
+
+<!-- END BODY -->
+
+
+</html>
+<script type="text/javascript">
+        
+    //var data_info = {{data_info|safe}}; //设备传入地图json数据
+	var data_info =[{0: "上海市",1: 121.371156,2: 31.127415,3: null,4: null,5: null,6: null,7: null,8: 17,9: 0.55,10: 2.38,11: 52.68}
+					,{0: "北京市",1: 116.32208,2: 40.00559,3: null,4: null,5: null,6: null,7: null,8: 17,9: 0.55,10: 2.38,11: 52.68}
+					,{0: "河南省",1: 113.6709006943,2: 34.9099322827,3: null,4: null,5: null,6: null,7: null,8: 17,9: 0.55,10: 2.38,11: 52.68}
+					,{0: "安徽省",1: 119.232521,2: 30.943812,3: null,4: null,5: null,6: null,7: null,8: 17,9: 0.55,10: 2.38,11: 52.68}
+					,{0: "福建省",1: 117.651279,2: 24.522086,3: null,4: null,5: null,6: null,7: null,8: 17,9: 0.55,10: 2.38,11: 52.68}];
+    // 百度地图API功能
+    // 百度地图API功能
+        function G(id) {
+            return document.getElementById(id);
+        }
+        var map = new BMap.Map("allmap");
+         map.centerAndZoom(new BMap.Point(116.3326, 40.010148), 15);//默认以上海为中心
+        // map.centerAndZoom(new BMap.Point(116.4035,39.915),15); 
+        // map.centerAndZoom(new BMap.Point(105.000, 38.000), 5);
+        //map.centerAndZoom("西安", 5);
+        map.addControl(new BMap.MapTypeControl()); //添加地图类型控件
+        map.addControl(new BMap.OverviewMapControl()); //添加缩略地图控件
+        map.addControl(new BMap.NavigationControl()); //添加地图缩放控件
+        map.addControl(new BMap.ScaleControl()); //添加比例尺控件
+        map.enableScrollWheelZoom(true);
+        // map.getCenter();
+
+
+
+        //定义一个控件类,即function
+        // function ZoomControl(){
+        //   // 默认停靠位置和偏移量 
+        //   this.defaultAnchor = BMAP_ANCHOR_BOTTOM_RIGHT;
+        //   this.defaultOffset = new BMap.Size(60, 820); // 距离左上角位置
+        // }
+        // // 通过JavaScript的prototype属性继承于BMap.Control
+        // ZoomControl.prototype = new BMap.Control();
+
+        // // 在本方法中创建个div元素作为控件的容器,并将其添加到地图容器中
+        // ZoomControl.prototype.initialize = function(map){
+        //   // 创建一个DOM元素
+        //   var div = document.createElement("div");
+         
+        //   // 添加文字说明
+        //   div.appendChild(document.createTextNode("设备安装点"));
+          
+        //   // 设置样式
+        //   // div.style.cursor = "pointer";
+        //   // div.style.border = "1px solid gray";
+        //   div.style.backgroundColor = "green";
+          
+        //   // 添加DOM元素到地图中
+        //   map.getContainer().appendChild(div);
+        //   // 将DOM元素返回
+        //   return div;
+        // }
+        // // 创建控件
+        // var myZoomCtrl = new ZoomControl();
+        // // 添加到地图当中
+        // map.addControl(myZoomCtrl);
+        function ShowLegendControl() {
+		this.defaultAnchor = BMAP_ANCHOR_BOTTOM_RIGHT ;
+		this.defaultOffset = new BMap.Size(10, 350);// 默认偏移量
+		}
+		ShowLegendControl.prototype = new BMap.Control();
+		ShowLegendControl.prototype.initialize = function(map) {
+		// 创建一个DOM元素
+		var ul = document.createElement("ul");
+		ul.style.background="White";
+		ul.style. padding="15px";
+		ul.style.opacity=" 0.8";
+		var li =$("<b><input style='width:100px; height: 0px;border:0px;background:none;'/>图例</b><br>").appendTo(ul);
+        var li =$("<input style='width:200px; height: 0px; border-bottom:1px solid #bf02fc;'/><br>").appendTo(ul);
+		var li =$("<b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;正常在线</b><input style='width:100px; height: 0px;border:0px;background:none;'/><img src=/static/images/mark_b.png style='width:20px;height:30px;'><br><br>").appendTo(ul);
+		var li = $("<b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp不在线</b><input style='width: 100px; height: 0px;border:0px;background:none; '/><img src=/static/images/mark_r.png style='width:20px;height:30px;'><br><br>").appendTo(ul);
+		var li = $("<b>在线超限预警</b><input style='width:100px; height: 0px;border:0px;background:none;'/><img src=/static/images/mark_y.png style='width:20px;height:30px;'><br><br>").appendTo(ul);
+
+		// var li = $("<a class='btn blue' data-toggle='modal' href='#responsive'>展开窗口</a><br><br>").appendTo(ul);
+		// 添加DOM元素到地图中
+		map.getContainer().appendChild(ul);
+		// 将DOM元素返回
+		return ul;
+
+		}
+		// 创建控件
+		var showLegendCtrl = new ShowLegendControl();
+		// 添加到地图当中
+		map.addControl(showLegendCtrl);
+        for (var i = 0; i < data_info.length; i++) {
+            (function (x) {
+
+                var jd = data_info[i][1];
+                var wd = data_info[i][2];
+        
+                var hotelTitle = "查看历史数据";
+                var coordinate = new BMap.Point(jd,wd);
+                // var myIcon = new BMap.Icon('192.168.0.138:8001/static/images/30-Point.png');
+                var myIcon = new BMap.Icon("/static/images/mark_b.png", new BMap.Size(26, 40), { //小车图片
+	                    // offset: new BMap.Size(0, -5), //相当于CSS精灵
+	                    // imageOffset: new BMap.Size(23, 26) //图片的偏移量。为了是图片底部中心对准坐标点。
+
+	                });
+                var marker = new BMap.Marker(coordinate,{icon:myIcon}); //创建标注
+
+                map.centerAndZoom(new BMap.Point(jd,wd),15);
+                map.addOverlay(marker);
+                 var label = new BMap.Label(data_info[i][6], { 
+                    offset: new BMap.Size(20,-10), //相当于CSS精灵
+                });
+             //    label.setStyle({
+             //     color : "red",
+             //     fontSize : "14px",
+             //     border : "0",
+             //     width: "100%",
+             //     height : "20px",
+             //     lineHeight : "20px",
+             //     fontFamily:"微软雅黑"
+             // });
+             //    marker.setLabel(label);
+
+                
+
+                 var opts = {title: '<a href=/'+data_info[i][8]+' style=font-size:12px;>' + hotelTitle + '</a>'};
+                
+                // 创建信息窗口对象，引号里可以书写任意的html语句。
+                var infoWindow = new BMap.InfoWindow("<div style='line-height:1.8em;font-size:12px;'>"
+                         // + '<img src="http://api.map.baidu.com/panorama/v2?ak=e3ZohdqyB0RL98hFOiC29xqh&width=512&height=256&location=121.392239,31.193578&fov=180" alt="" style="float:right;zoom:1;overflow:hidden;width:240px;height:90px;margin-left:3px;"/>'
+                         + '<img src="/static/images/mark_b.png" alt="" style="float:right;zoom:1;overflow:hidden;width:240px;height:90px;margin-left:3px;"/>'
+                        // + "</br><b>序号:</b>" + num
+                        // + "</br><b>详细信息:</b>" + 
+                        + "</br><b>地址:</b>" + data_info[i][0]
+                        + "</br><b>设备名称:</b>" + data_info[i][3]
+                        + "</br><b>时间:</b>" + data_info[i][4]
+                        + "</br><b>测试一:</b>" + data_info[i][5]
+                        + "</br><b>测试二:</b>" + data_info[i][6]
+                        + "</br><b>测试三:</b>"+ data_info[i][7]
+                        + "</div>",opts);
+                
+                marker.addEventListener("mouseover", function () {
+
+                    this.openInfoWindow(infoWindow);
+                    // //图片加载完毕重绘infowindow
+                     document.getElementById('allmap').onload = function () {
+                     infoWindow.redraw();
+                     }
+                });
+                map.addOverlay(marker); //添加marker到地图上
+
+            })(i);
+            // map.centerAndZoom(new BMap.Point(105.000, 38.000), 5);
+            map.centerAndZoom("西安", 5);
+        }
+
+</script>
+{% endblock %}
